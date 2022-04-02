@@ -17,5 +17,8 @@ Docker-composeがインストールされている前提<br>
 ```
 docker-compose build
 docker-compose up -d
-docker exec form_temperature-app-1 python3 main.py
+docker exec form_temperature-app-1 python3 main.py --cui
+
+# GCPのCompute Engineなど以外では2Factaが消えてる?
+docker exec form_temperature-app-1 python3 main.py --no_facta --cui -w 3
 ```

@@ -18,12 +18,13 @@ import pyotp
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 class sel_main:
-    def __init__(self, wait_time):
+    def __init__(self, wait_time, no_facta):
         self.url = os.environ['URL'] #j["url"]
         self.email = os.environ['EMAIL'] #j["email"]
         self.password = os.environ['PASSWORD'] #j["password"]
         self.key = os.environ['AUTH_KEY'] #j["auth_key"]
         self.wait = int(wait_time)
+        self.no_facta = no_facta
         print("Login as : ", self.email)
 
 
@@ -51,24 +52,24 @@ class sel_main:
         element = driver.find_element(By.ID, "idSIButton9")
         element.click()
         time.sleep(self.wait)
+       
+        # 2Facta認証
+        if not self.no_facta:
+            # click "mobile auth"
+            element = driver.find_element(By.CLASS_NAME, "table")
+            element.click()
+            time.sleep(self.wait)
 
-        """
-        # click "mobile auth"
-        element = driver.find_element(By.CLASS_NAME, "table")
-        element.click()
-        time.sleep(self.wait)
+            # Get and Enter 2facta
+            self.get_two_facta()
+            element = driver.find_element(By.XPATH, '//*[@id="idTxtBx_SAOTCC_OTC"]')
+            element.send_keys(self.two_auth_pass)
+            time.sleep(self.wait*2)
 
-        # Get and Enter 2facta
-        self.get_two_facta()
-        element = driver.find_element(By.XPATH, '//*[@id="idTxtBx_SAOTCC_OTC"]')
-        element.send_keys(self.two_auth_pass)
-        time.sleep(self.wait*2)
-
-        # Click Enter
-        element = driver.find_element(By.XPATH, '//*[@id="idSubmit_SAOTCC_Continue"]')
-        element.click()
-        time.sleep(self.wait+2)
-        """
+            # Click Enter
+            element = driver.find_element(By.XPATH, '//*[@id="idSubmit_SAOTCC_Continue"]')
+            element.click()
+            time.sleep(self.wait+2)
 
         # Stay signin -> No
         element = driver.find_element(By.ID, "idBtn_Back")
@@ -152,7 +153,8 @@ if __name__ == "__main__":
     parser.add_argument('--debug', action='store_true')
     parser.add_argument("-w", "--wait", default=3)
     parser.add_argument("--cui", action="store_true")
+    parser.add_argument("--no_facta", action="store_true")
     args = parser.parse_args()
 
-    sel = sel_main(args.wait)
+    sel = sel_main(args.wait, args.no_facta)
     sel.open_url(args.debug, args.cui)

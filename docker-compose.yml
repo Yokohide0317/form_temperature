@@ -1,7 +1,7 @@
 version: "3"
 services:
   selenium:
-    image: selenium/standalone-firefox-debug:3.141.59
+    image: selenium/standalone-firefox-debug:latest
     ports:
       - 4444
       - 5900:5900
