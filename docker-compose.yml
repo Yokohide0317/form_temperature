@@ -7,6 +7,8 @@ services:
       - 5900:5900
     volumes:
       - /dev/shm:/dev/shm
+    restart: always
+    
   app:
     build:
       context: ./app
@@ -16,3 +18,4 @@ services:
     environment:
       SELENIUM_URL: http://selenium:4444/wd/hub
     tty: true
+    restart: always
